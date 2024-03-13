@@ -17,10 +17,8 @@ java {
 repositories {
     maven {
         url = uri("https://www.jetbrains.com/intellij-repository/releases")
-        content {
-            includeGroup("com.jetbrains.intellij.tools")
-        }
     }
+
     maven {
         url = uri("https://cache-redirector.jetbrains.com/intellij-dependencies")
     }
@@ -75,7 +73,6 @@ class SmokeIdeTestSystemProperties(
     val studioHome: Provider<String>
 ) : CommandLineArgumentProvider {
     override fun asArguments(): MutableIterable<String> = buildList {
-        add("-Dstudio.tests.headless=true")
         if (ideaHome.isPresent) {
             add("-DideaHome=${ideaHome.get()}")
         }
@@ -85,17 +82,18 @@ class SmokeIdeTestSystemProperties(
     }.toMutableList()
 }
 
-
 dependencies {
-    smokeIdeTestImplementation(libs.gradleProfiler) {
-        version {
-            strictly("0.21.17-alpha-5")
-            because("IDE provisioning requires special version of profiler compiled with Java 17")
-        }
-
-        // This dep is conflicting with the version from `:distributions-full` project.
+    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-starter-squashed:232.10300.40") {
         exclude("io.grpc")
     }
+    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-starter-junit4:232.10300.40") {
+        exclude("io.grpc")
+    }
+    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-performance-testing-commands:232.10300.40") {
+        exclude("io.grpc")
+    }
+    smokeIdeTestImplementation("org.kodein.di:kodein-di-jvm:7.16.0")
+    smokeIdeTestImplementation(libs.gradleProfiler)
     smokeIdeTestDistributionRuntimeOnly(project(":distributions-full")) {
         because("Tests starts an IDE with using current Gradle distribution")
     }

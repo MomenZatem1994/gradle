@@ -69,7 +69,6 @@
          <ignored-key id="618DFA9690C9E933" reason="Key couldn't be downloaded from any key server"/>
          <ignored-key id="74DAFDFD6DAE2441" reason="Key couldn't be downloaded from any key server"/>
          <ignored-key id="7D9C4872D31F6F2B" reason="Key couldn't be downloaded from any key server"/>
-         <ignored-key id="84E913A8E3A748C0" reason="Key couldn't be downloaded from any key server"/>
          <ignored-key id="9291F17036AEE155" reason="Key couldn't be downloaded from any key server"/>
       </ignored-keys>
       <trusted-keys>
@@ -202,6 +201,7 @@
          <trusted-key id="7616EB882DAF57A11477AAF559A252FB1199D873" group="com.google.code.findbugs"/>
          <trusted-key id="764BE739DDAE10F4473FECF0AEF385ED6CA815AE" group="com.miglayout"/>
          <trusted-key id="76E94E8FF0AB5AF3B6F8366972FEFD1572EB75E1" group="org.spockframework"/>
+         <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle"/>
          <trusted-key id="7B79ADD11F8A779FE90FD3D0893A028475557671">
             <trusting group="com.gradle"/>
             <trusting group="com.gradle" name="gradle-enterprise-gradle-plugin"/>
@@ -1371,26 +1371,6 @@
       <component group="org.bidib.com.github.markusbernhardt" name="proxy-vole" version="1.1.0">
          <artifact name="proxy-vole-1.1.0.jar">
             <pgp value="F6873929A06995E89B33BCF9A1552823782C0CB0"/>
-         </artifact>
-      </component>
-      <component group="org.bouncycastle" name="bcpg-jdk18on" version="1.76">
-         <artifact name="bcpg-jdk18on-1.76.jar">
-            <sha256 value="5bc7c7ea6fc4d38cdfa0cf28142cc11944c6fa9abfa756ce8fb7a7e11d2fbf9e" origin="Verified" reason="A key couldn't be downloaded"/>
-         </artifact>
-      </component>
-      <component group="org.bouncycastle" name="bcpkix-jdk18on" version="1.76">
-         <artifact name="bcpkix-jdk18on-1.76.jar">
-            <sha256 value="935a388854c329f9a6f32708f30c90045d2f91294fa687281273145d4cf9834a" origin="Verified" reason="A key couldn't be downloaded"/>
-         </artifact>
-      </component>
-      <component group="org.bouncycastle" name="bcprov-jdk18on" version="1.76">
-         <artifact name="bcprov-jdk18on-1.76.jar">
-            <pgp value="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0"/>
-         </artifact>
-      </component>
-      <component group="org.bouncycastle" name="bcutil-jdk18on" version="1.76">
-         <artifact name="bcutil-jdk18on-1.76.jar">
-            <sha256 value="1a65ad02958223a3f31373bd72eea942cafd1b1877a3ed0b492c2487e77c3c27" origin="Verified" reason="A key couldn't be downloaded"/>
          </artifact>
       </component>
       <component group="org.brotli" name="dec" version="0.1.2">

@@ -16,7 +16,20 @@
 
 package org.gradle.ide.sync
 
-
+import com.intellij.ide.starter.ide.IDETestContext
+import com.intellij.ide.starter.ide.IdeProductProvider
+import com.intellij.ide.starter.ide.command.CommandChain
+import com.intellij.ide.starter.junit4.JUnit4StarterRule
+import com.intellij.ide.starter.junit4.JUnit4StarterRuleKt
+import com.intellij.ide.starter.models.IdeInfo
+import com.intellij.ide.starter.models.TestCase
+import com.intellij.ide.starter.models.VMOptions
+import com.intellij.ide.starter.project.LocalProjectInfo
+import com.intellij.ide.starter.runner.IDECommandLine
+import com.jetbrains.performancePlugin.commands.chain.GeneralCommandChainKt
+import kotlin.jvm.functions.Function1
+import kotlin.time.DurationKt
+import kotlin.time.DurationUnit
 import org.gradle.integtests.fixtures.AbstractIntegrationSpec
 import org.gradle.internal.UncheckedException
 import org.gradle.internal.jvm.Jvm
@@ -36,13 +49,13 @@ import org.gradle.profiler.studio.AndroidStudioSyncAction
 import org.gradle.profiler.studio.invoker.StudioBuildInvocationResult
 import org.gradle.profiler.studio.invoker.StudioGradleScenarioDefinition
 import org.gradle.profiler.studio.invoker.StudioGradleScenarioInvoker
-import org.gradle.test.precondition.Requires
-import org.gradle.test.preconditions.IntegTestPreconditions
+import org.junit.Rule
+import org.junit.rules.TestName
 
 import java.nio.file.Path
 import java.util.function.Consumer
 
-@Requires(IntegTestPreconditions.Java17HomeAvailable)
+//@Requires(IntegTestPreconditions.Java17HomeAvailable)
 /**
  * Tests that runs a project import to IDE, with an optional provisioning of the desired IDE.
  *
@@ -60,7 +73,11 @@ abstract class AbstractSyncSmokeIdeTest extends AbstractIntegrationSpec {
 
     private final File profilerOutput = file("profiler-output")
 
-    protected StudioBuildInvocationResult syncResult
+    @Rule
+    JUnit4StarterRule testContextFactory = JUnit4StarterRuleKt.initJUnit4StarterRule()
+
+    @Rule
+    TestName testName = new TestName()
 
     /**
      * Downloads, if it absent in {@link #ideHome} dir, Android Studio with a passed version
@@ -98,18 +115,58 @@ abstract class AbstractSyncSmokeIdeTest extends AbstractIntegrationSpec {
      * Local IDEA installation can be passed via `ideaHome` system property and it takes precedence over
      * a version passed as a parameter.
      */
+    @SuppressWarnings("GroovyAccessibility")
     protected void ideaSync(String buildType, String version) {
-        def invocationSettings =
-            syncInvocationSettingsBuilder(getIdeInstallDirFromSystemProperty("ideaHome")).build()
+        def testCase = new TestCase(
+            new IdeInfo(
+                IdeProductProvider.IC.productCode,
+                IdeProductProvider.IC.platformPrefix,
+                IdeProductProvider.IC.executableFileName,
+                buildType,
+                IdeProductProvider.IC.additionalModules,
+                IdeProductProvider.IC.buildNumber,
+                version,
+                IdeProductProvider.IC.tag,
+                IdeProductProvider.IC.downloadURI,
+                IdeProductProvider.IC.fullName,
+            ),
+            new LocalProjectInfo(
+                testDirectory.toPath(),
+                false,
+                0L,
+                {},
+                "Project under test"
+            ),
+            new Function1<IDETestContext, IDETestContext>() {
+                @Override
+                IDETestContext invoke(IDETestContext ideTestContext) {
+                    return ideTestContext
+                }
+            },
+            [],
+            false
+        )
 
-        sync(
-            INTELLIJ_COMMUNITY_TYPE,
-            version,
-            buildType,
-            ideHome,
-            "IDEA sync",
-            invocationSettings,
-            Collections.emptyList()
+        def testContext = testContextFactory
+            .initializeTestContext(testName.methodName, testCase, false)
+            .prepareProjectCleanImport()
+
+        testContext.invokeMethod("runIDE-SBKQj6I", [
+            IDECommandLine.OpenTestCaseProject.INSTANCE,
+            GeneralCommandChainKt.exitApp(new CommandChain(), false),
+            null,
+            DurationKt.toDuration(10, DurationUnit.MINUTES),
+            true,
+            "Smoke sync",
+            false,
+            false,
+            new Function1<VMOptions, VMOptions>() {
+                @Override
+                VMOptions invoke(VMOptions vmOptions) {
+                    return vmOptions
+                }
+            }
+        ]
         )
     }
 
@@ -168,11 +225,7 @@ abstract class AbstractSyncSmokeIdeTest extends AbstractIntegrationSpec {
                 Collections.emptyList()
             ),
             Collections.emptyList(),
-            Collections.emptyList(),
-            ideType,
-            ideVersion,
-            ideBuildType,
-            ideHome
+            Collections.emptyList()
         )
 
         def scenarioInvoker = new StudioGradleScenarioInvoker(
