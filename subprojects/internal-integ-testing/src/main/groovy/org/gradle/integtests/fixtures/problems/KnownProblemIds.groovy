@@ -80,6 +80,9 @@ class KnownProblemIds {
         // categories from integration tests
         'TEST_PROBLEM',
         'generic:deprecation:plugin',
+        'generic:configuration-consumption-detachedconfiguration',
+        'generic:behaviour-using-task-validateplugins-without-applying-the-java-toolchain-plugin',
+        'generic:method-repositoryhandler-jcenter',
         'generic:type',
         'problems-api:invalid-additional-data',
         'problems-api:missing-category',
