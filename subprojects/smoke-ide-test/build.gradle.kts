@@ -83,13 +83,13 @@ class SmokeIdeTestSystemProperties(
 }
 
 dependencies {
-    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-starter-squashed:232.10300.40") {
+    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-starter-squashed:233.14808.21") {
         exclude("io.grpc")
     }
-    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-starter-junit4:232.10300.40") {
+    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-starter-junit4:233.14808.21") {
         exclude("io.grpc")
     }
-    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-performance-testing-commands:232.10300.40") {
+    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-performance-testing-commands:233.14808.21") {
         exclude("io.grpc")
     }
     smokeIdeTestImplementation("org.kodein.di:kodein-di-jvm:7.16.0")

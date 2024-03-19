@@ -43,7 +43,7 @@ class IsolatedProjectsJavaProjectSyncTest extends AbstractIdeaSyncTest {
     }
 
     private void simpleJavaProject() {
-        settingsFile << """
+        file("settings.gradle") << """
             rootProject.name = 'project-under-test'
             include ':app'
             include ':lib'

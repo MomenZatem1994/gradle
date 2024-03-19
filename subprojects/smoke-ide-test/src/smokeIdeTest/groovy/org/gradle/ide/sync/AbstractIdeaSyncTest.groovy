@@ -16,10 +16,9 @@
 
 package org.gradle.ide.sync
 
-import com.intellij.ide.starter.di.DiContainerKt
+
 import com.intellij.ide.starter.ide.IDETestContext
 import com.intellij.ide.starter.ide.IdeProductProvider
-import com.intellij.ide.starter.ide.command.CommandChain
 import com.intellij.ide.starter.junit4.JUnit4StarterRule
 import com.intellij.ide.starter.junit4.JUnit4StarterRuleKt
 import com.intellij.ide.starter.models.IdeInfo
@@ -27,50 +26,50 @@ import com.intellij.ide.starter.models.TestCase
 import com.intellij.ide.starter.models.VMOptions
 import com.intellij.ide.starter.project.LocalProjectInfo
 import com.intellij.ide.starter.runner.IDECommandLine
-import com.jetbrains.performancePlugin.commands.chain.GeneralCommandChainKt
+import com.intellij.ide.starter.runner.IDERunContext
+import com.intellij.tools.ide.performanceTesting.commands.CommandChain
+import com.intellij.tools.ide.performanceTesting.commands.GeneralCommandChainKt
 import kotlin.Unit
 import kotlin.jvm.functions.Function1
 import kotlin.time.DurationKt
 import kotlin.time.DurationUnit
-import org.gradle.integtests.fixtures.AbstractIntegrationSpec
+import org.gradle.integtests.fixtures.executer.GradleDistribution
+import org.gradle.integtests.fixtures.executer.IntegrationTestBuildContext
+import org.gradle.integtests.fixtures.executer.UnderDevelopmentGradleDistribution
+import org.gradle.test.fixtures.file.CleanupTestDirectory
+import org.gradle.test.fixtures.file.TestFile
+import org.gradle.test.fixtures.file.TestNameTestDirectoryProvider
 import org.junit.Rule
 import org.junit.rules.TestName
-import org.kodein.di.BindSingletonKt
-import org.kodein.di.Copy
-import org.kodein.di.DI
-import static org.kodein.di.BindSingletonKt.*
+import spock.lang.Specification
+import spock.lang.Timeout
 
 import java.nio.file.Path
 
 @SuppressWarnings("GroovyAccessibility")
-abstract class AbstractIdeaSyncTest extends AbstractIntegrationSpec {
+@CleanupTestDirectory
+@Timeout(600)
+abstract class AbstractIdeaSyncTest extends Specification {
 
     @Rule
-    JUnit4StarterRule testContextFactory = JUnit4StarterRuleKt.initJUnit4StarterRule()
+    final TestName testName = new TestName()
 
     @Rule
-    TestName testName = new TestName()
+    final JUnit4StarterRule testContextFactory = JUnit4StarterRuleKt.initJUnit4StarterRule()
 
-    def setup() {
-        DiContainerKt.di = DI.Companion.invoke(false, new Function1<DI.MainBuilder, Unit>() {
-            @Override
-            Unit invoke(DI.MainBuilder mainBuilder) {
-                mainBuilder.extend(DiContainerKt.di, true, Copy.NonCached.INSTANCE)
-                return Unit.INSTANCE
-            }
-        })
+    @Rule
+    final TestNameTestDirectoryProvider temporaryFolder = new TestNameTestDirectoryProvider(getClass())
+
+    private final GradleDistribution distribution = new UnderDevelopmentGradleDistribution(getBuildContext())
+
+    private IntegrationTestBuildContext getBuildContext() {
+        return IntegrationTestBuildContext.INSTANCE
     }
 
     protected void ideaSync(String buildType, String version) {
         TestCase testCase = new TestCase(
             getIdeaCommunity(buildType, version),
             getTestProject(),
-            new Function1<IDETestContext, IDETestContext>() {
-                @Override
-                IDETestContext invoke(IDETestContext ideTestContext) {
-                    return ideTestContext
-                }
-            },
             Collections.EMPTY_LIST,
             false
         )
@@ -82,6 +81,10 @@ abstract class AbstractIdeaSyncTest extends AbstractIntegrationSpec {
         useLocalGradleDistributionIn(testContext)
 
         runSync(testContext)
+    }
+
+    protected TestFile getTestDirectory() {
+        temporaryFolder.testDirectory
     }
 
     private void useLocalGradleDistributionIn(IDETestContext testContext) {
@@ -97,7 +100,12 @@ abstract class AbstractIdeaSyncTest extends AbstractIntegrationSpec {
 
     private void runSync(IDETestContext testContext) {
         testContext.invokeMethod("runIDE-SBKQj6I", [
-            IDECommandLine.OpenTestCaseProject.INSTANCE,
+            new Function1<IDERunContext, IDECommandLine>() {
+                @Override
+                IDECommandLine invoke(IDERunContext ideRunContext) {
+                    return new IDECommandLine.OpenTestCaseProject(testContext, [])
+                }
+            },
             GeneralCommandChainKt.exitApp(new CommandChain(), false),
             null,
             DurationKt.toDuration(10, DurationUnit.MINUTES),
@@ -105,27 +113,32 @@ abstract class AbstractIdeaSyncTest extends AbstractIntegrationSpec {
             "",
             false,
             false,
-            new Function1<VMOptions, VMOptions>() {
+            new Function1<IDERunContext, Unit>() {
                 @Override
-                VMOptions invoke(VMOptions vmOptions) {
-                    vmOptions.removeProfilerAgents()
-                    vmOptions.inHeadlessMode()
-                    return vmOptions
+                Unit invoke(IDERunContext vmOptions) {
+                    return Unit.INSTANCE
                 }
             }
         ]
         )
     }
 
+    protected TestFile file(Object... path) {
+        if (path.length == 1 && path[0] instanceof TestFile) {
+            return path[0] as TestFile
+        }
+        testDirectory.file(path)
+    }
+
     private LocalProjectInfo getTestProject() {
         new LocalProjectInfo(
             testDirectory.toPath(),
             false,
-            0L,
-            new Function1<Path, Path>() {
+            DurationKt.toDuration(1, DurationUnit.MINUTES),
+            new Function1<IDETestContext, Unit>() {
                 @Override
-                Path invoke(Path path) {
-                    return path
+                Unit invoke(IDETestContext context) {
+                    return Unit.INSTANCE
                 }
             },
             "Project under test"
@@ -144,6 +157,7 @@ abstract class AbstractIdeaSyncTest extends AbstractIntegrationSpec {
             IdeProductProvider.IC.tag,
             IdeProductProvider.IC.downloadURI,
             IdeProductProvider.IC.fullName,
+            IdeProductProvider.IC.getInstaller
         )
     }
 }
