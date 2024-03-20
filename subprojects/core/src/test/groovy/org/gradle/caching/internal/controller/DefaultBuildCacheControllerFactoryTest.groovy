@@ -17,6 +17,7 @@
 package org.gradle.caching.internal.controller
 
 import org.gradle.api.internal.StartParameterInternal
+import org.gradle.api.internal.cache.CacheConfigurationsInternal
 import org.gradle.api.internal.cache.StringInterner
 import org.gradle.api.internal.file.temp.TemporaryFileProvider
 import org.gradle.caching.BuildCacheEntryReader
@@ -48,7 +49,8 @@ class DefaultBuildCacheControllerFactoryTest extends Specification {
     def buildCacheEnabled = true
     def buildOperationRunner = new TestBuildOperationRunner()
     def buildOperationProgressEmitter = new NoOpBuildOperationProgressEventEmitter()
-    def config = new DefaultBuildCacheConfiguration(TestUtil.instantiatorFactory().inject(), [
+    def cacheConfigurations = Stub(CacheConfigurationsInternal)
+    def config = new DefaultBuildCacheConfiguration(TestUtil.instantiatorFactory().inject(), cacheConfigurations, [
         new DefaultBuildCacheServiceRegistration(DirectoryBuildCache, TestDirectoryBuildCacheServiceFactory),
         new DefaultBuildCacheServiceRegistration(TestOtherRemoteBuildCache, TestOtherRemoteBuildCacheServiceFactory),
         new DefaultBuildCacheServiceRegistration(TestRemoteBuildCache, TestRemoteBuildCacheServiceFactory),

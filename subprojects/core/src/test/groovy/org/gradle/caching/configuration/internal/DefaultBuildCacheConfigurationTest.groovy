@@ -16,6 +16,9 @@
 
 package org.gradle.caching.configuration.internal
 
+import org.gradle.api.internal.cache.CacheConfigurationsInternal
+import org.gradle.api.internal.cache.CacheResourceConfigurationInternal
+import org.gradle.api.provider.Property
 import org.gradle.caching.BuildCacheServiceFactory
 import org.gradle.caching.configuration.AbstractBuildCache
 import org.gradle.caching.configuration.BuildCache
@@ -24,10 +27,16 @@ import org.gradle.caching.local.internal.DirectoryBuildCacheServiceFactory
 import org.gradle.internal.reflect.Instantiator
 import spock.lang.Specification
 
+import java.util.concurrent.TimeUnit
+
 class DefaultBuildCacheConfigurationTest extends Specification {
+    static RETENTION_DAYS = 5
+
+    def localBuildCache = Mock(DirectoryBuildCache)
     def instantiator = Mock(Instantiator) {
-        newInstance(DirectoryBuildCache) >> { Stub(DirectoryBuildCache) }
+        newInstance(DirectoryBuildCache) >> { localBuildCache }
     }
+    def cacheConfigurations = mockCacheConfigurations(RETENTION_DAYS)
 
     def 'can reconfigure remote'() {
         def buildCacheConfiguration = createConfig()
@@ -101,15 +110,39 @@ class DefaultBuildCacheConfigurationTest extends Specification {
         ex.message == "A type for the remote build cache must be configured first."
     }
 
+    def "configures defaults for local build cache"() {
+        when:
+        createConfig()
+
+        then:
+        1 * localBuildCache.setPush(true)
+        1 * localBuildCache.setRemoveUnusedEntriesAfterDays(5)
+    }
+
     static class CustomBuildCache extends AbstractBuildCache {}
 
     static class OtherCustomBuildCache extends AbstractBuildCache {}
 
     private def createConfig() {
-        return new DefaultBuildCacheConfiguration(instantiator, [
+        return new DefaultBuildCacheConfiguration(instantiator, cacheConfigurations, [
             new DefaultBuildCacheServiceRegistration(DirectoryBuildCache, DirectoryBuildCacheServiceFactory),
             new DefaultBuildCacheServiceRegistration(CustomBuildCache, BuildCacheServiceFactory),
             new DefaultBuildCacheServiceRegistration(OtherCustomBuildCache, BuildCacheServiceFactory)
         ])
     }
+
+    private CacheConfigurationsInternal mockCacheConfigurations(int retentionDays) {
+        Mock(CacheConfigurationsInternal) {
+            getCreatedResources() >> {
+                Stub(CacheResourceConfigurationInternal) {
+                    getRemoveUnusedEntriesOlderThan() >> {
+                        Mock(Property) {
+                            get() >> { System.currentTimeMillis() - TimeUnit.MILLISECONDS.convert(retentionDays, TimeUnit.DAYS) }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
