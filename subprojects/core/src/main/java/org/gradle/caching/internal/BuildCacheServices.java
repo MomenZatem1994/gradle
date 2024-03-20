@@ -18,6 +18,7 @@ package org.gradle.caching.internal;
 
 import org.gradle.api.internal.GradleInternal;
 import org.gradle.api.internal.StartParameterInternal;
+import org.gradle.api.internal.cache.CacheConfigurationsInternal;
 import org.gradle.api.internal.cache.StringInterner;
 import org.gradle.api.internal.file.temp.TemporaryFileProvider;
 import org.gradle.caching.configuration.internal.BuildCacheConfigurationInternal;
@@ -96,9 +97,10 @@ public final class BuildCacheServices extends AbstractPluginServiceRegistry {
 
             BuildCacheConfigurationInternal createBuildCacheConfiguration(
                 Instantiator instantiator,
+                CacheConfigurationsInternal cacheConfigurations,
                 List<BuildCacheServiceRegistration> allBuildCacheServiceFactories
             ) {
-                return instantiator.newInstance(DefaultBuildCacheConfiguration.class, instantiator, allBuildCacheServiceFactories);
+                return instantiator.newInstance(DefaultBuildCacheConfiguration.class, instantiator, cacheConfigurations, allBuildCacheServiceFactories);
             }
 
             BuildCacheServiceRegistration createDirectoryBuildCacheServiceRegistration() {

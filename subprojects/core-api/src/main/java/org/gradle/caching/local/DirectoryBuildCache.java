@@ -49,6 +49,7 @@ public abstract class DirectoryBuildCache extends AbstractBuildCache {
 
     /**
      * Returns the number of days after unused entries are garbage collected. Defaults to 7 days.
+     * Defaults to {@link org.gradle.api.cache.CacheConfigurations#createdResources} value.
      *
      * @since 4.6
      */
@@ -57,7 +58,8 @@ public abstract class DirectoryBuildCache extends AbstractBuildCache {
     }
 
     /**
-     * Sets the number of days after unused entries are garbage collected. Defaults to 7 days.
+     * Sets the number of days after unused entries are garbage collected.
+     * Defaults to {@link org.gradle.api.cache.CacheConfigurations#createdResources} value.
      *
      * Must be greater than 1.
      *

@@ -20,6 +20,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import org.gradle.api.Action;
 import org.gradle.api.GradleException;
+import org.gradle.api.internal.cache.CacheConfigurationsInternal;
 import org.gradle.caching.BuildCacheServiceFactory;
 import org.gradle.caching.configuration.BuildCache;
 import org.gradle.caching.local.DirectoryBuildCache;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class DefaultBuildCacheConfiguration implements BuildCacheConfigurationInternal {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultBuildCacheConfiguration.class);
@@ -43,10 +45,10 @@ public class DefaultBuildCacheConfiguration implements BuildCacheConfigurationIn
 
     private Set<BuildCacheServiceRegistration> registrations;
 
-    public DefaultBuildCacheConfiguration(Instantiator instantiator, List<BuildCacheServiceRegistration> allBuiltInBuildCacheServices) {
+    public DefaultBuildCacheConfiguration(Instantiator instantiator, CacheConfigurationsInternal cacheConfigurations, List<BuildCacheServiceRegistration> allBuiltInBuildCacheServices) {
         this.instantiator = instantiator;
         this.registrations = Sets.newHashSet(allBuiltInBuildCacheServices);
-        this.local = createLocalCacheConfiguration(instantiator, registrations);
+        this.local = createLocalCacheConfiguration(instantiator, cacheConfigurations, registrations);
     }
 
     @Override
@@ -120,10 +122,15 @@ public class DefaultBuildCacheConfiguration implements BuildCacheConfigurationIn
         this.registrations = registrations;
     }
 
-    private static DirectoryBuildCache createLocalCacheConfiguration(Instantiator instantiator, Set<BuildCacheServiceRegistration> registrations) {
+    private static DirectoryBuildCache createLocalCacheConfiguration(Instantiator instantiator, CacheConfigurationsInternal cacheConfigurations, Set<BuildCacheServiceRegistration> registrations) {
         DirectoryBuildCache local = createBuildCacheConfiguration(instantiator, DirectoryBuildCache.class, registrations);
         // By default, we push to the local cache.
         local.setPush(true);
+
+        // Copy the default retention period from the global cache configuration
+        long defaultRemoveEntriesOlderThan = cacheConfigurations.getCreatedResources().getRemoveUnusedEntriesOlderThan().get();
+        int defaultRemoveEntriesAfterDays = (int) TimeUnit.DAYS.convert(Math.max(0, System.currentTimeMillis() - defaultRemoveEntriesOlderThan), TimeUnit.MILLISECONDS);
+        local.setRemoveUnusedEntriesAfterDays(defaultRemoveEntriesAfterDays);
         return local;
     }
 
