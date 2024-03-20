@@ -30,7 +30,7 @@ import spock.lang.Specification
 import java.util.concurrent.TimeUnit
 
 class DefaultBuildCacheConfigurationTest extends Specification {
-    static RETENTION_DAYS = 5
+    static final RETENTION_DAYS = 5
 
     def localBuildCache = Mock(DirectoryBuildCache)
     def instantiator = Mock(Instantiator) {
@@ -116,7 +116,7 @@ class DefaultBuildCacheConfigurationTest extends Specification {
 
         then:
         1 * localBuildCache.setPush(true)
-        1 * localBuildCache.setRemoveUnusedEntriesAfterDays(5)
+        1 * localBuildCache.setRemoveUnusedEntriesAfterDays(RETENTION_DAYS)
     }
 
     static class CustomBuildCache extends AbstractBuildCache {}
