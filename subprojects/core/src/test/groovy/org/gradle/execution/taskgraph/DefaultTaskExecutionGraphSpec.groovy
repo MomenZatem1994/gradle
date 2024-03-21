@@ -68,45 +68,63 @@ import org.gradle.internal.service.ServiceRegistry
 import org.gradle.internal.service.scopes.Scope
 import org.gradle.internal.work.DefaultWorkerLeaseService
 import org.gradle.internal.work.WorkerLeaseRegistry
+import org.gradle.testfixtures.internal.NativeServicesTestFixture
 import org.gradle.util.Path
 
 import static org.gradle.internal.snapshot.CaseSensitivity.CASE_SENSITIVE
 
 class DefaultTaskExecutionGraphSpec extends AbstractExecutionPlanSpec {
-    def cancellationToken = Mock(BuildCancellationToken)
-    def listenerManager = new DefaultListenerManager(Scope.Build)
-    def graphListeners = listenerManager.createAnonymousBroadcaster(TaskExecutionGraphListener.class)
-    def taskExecutionListeners = listenerManager.createAnonymousBroadcaster(TaskExecutionListener.class)
-    def listenerRegistrationListener = listenerManager.getBroadcaster(BuildScopeListenerRegistrationListener.class)
-    def nodeExecutor = Mock(NodeExecutor)
-    def buildOperationExecutor = new TestBuildOperationExecutor()
-    def listenerBuildOperationDecorator = new TestListenerBuildOperationDecorator()
-    def parallelismConfiguration = new DefaultParallelismConfiguration(true, 1)
-    def workerLeases = new DefaultWorkerLeaseService(coordinator, parallelismConfiguration)
-    def executorFactory = Mock(ExecutorFactory)
-    def accessHierarchies = new ExecutionNodeAccessHierarchies(CASE_SENSITIVE, Stub(Stat))
-    def taskNodeFactory = new TaskNodeFactory(thisBuild, Stub(BuildTreeWorkGraphController), nodeValidator, new TestBuildOperationRunner(), accessHierarchies)
-    def dependencyResolver = new TaskDependencyResolver([new TaskNodeDependencyResolver(taskNodeFactory)])
-    def projectStateRegistry = Stub(ProjectStateRegistry)
-    def executionPlan = newExecutionPlan()
-    def taskGraph = new DefaultTaskExecutionGraph(
-        new DefaultPlanExecutor(parallelismConfiguration, executorFactory, workerLeases, cancellationToken, coordinator, new DefaultInternalOptions([:])),
-        [nodeExecutor],
-        buildOperationExecutor,
-        listenerBuildOperationDecorator,
-        thisBuild,
-        graphListeners,
-        taskExecutionListeners,
-        listenerRegistrationListener,
-        Stub(ServiceRegistry) {
-            get(TaskDependencyFactory) >> TestFiles.taskDependencyFactory()
-        }
-    )
+    def cancellationToken
+    def listenerManager
+    def graphListeners
+    def taskExecutionListeners
+    def listenerRegistrationListener
+    def nodeExecutor
+    def buildOperationExecutor
+    def listenerBuildOperationDecorator
+    def parallelismConfiguration
+    def workerLeases
+    def executorFactory
+    def accessHierarchies
+    def taskNodeFactory
+    def dependencyResolver
+    def projectStateRegistry
+    def executionPlan
+    def taskGraph
     WorkerLeaseRegistry.WorkerLeaseCompletion parentWorkerLease
     def executedTasks = []
     def failures = []
 
     def setup() {
+        cancellationToken = Mock(BuildCancellationToken)
+        listenerManager = new DefaultListenerManager(Scope.Build)
+        graphListeners = listenerManager.createAnonymousBroadcaster(TaskExecutionGraphListener.class)
+        taskExecutionListeners = listenerManager.createAnonymousBroadcaster(TaskExecutionListener.class)
+        listenerRegistrationListener = listenerManager.getBroadcaster(BuildScopeListenerRegistrationListener.class)
+        nodeExecutor = Mock(NodeExecutor)
+        buildOperationExecutor = new TestBuildOperationExecutor()
+        listenerBuildOperationDecorator = new TestListenerBuildOperationDecorator()
+        parallelismConfiguration = new DefaultParallelismConfiguration(true, 1)
+        workerLeases = new DefaultWorkerLeaseService(coordinator, parallelismConfiguration)
+        executorFactory = Mock(ExecutorFactory)
+        accessHierarchies = new ExecutionNodeAccessHierarchies(CASE_SENSITIVE, Stub(Stat))
+        taskNodeFactory = new TaskNodeFactory(thisBuild, Stub(BuildTreeWorkGraphController), nodeValidator, new TestBuildOperationRunner(), accessHierarchies)
+        dependencyResolver = new TaskDependencyResolver([new TaskNodeDependencyResolver(taskNodeFactory)])
+        projectStateRegistry = Stub(ProjectStateRegistry)
+        executionPlan = newExecutionPlan()
+        taskGraph = new DefaultTaskExecutionGraph(
+            new DefaultPlanExecutor(parallelismConfiguration, executorFactory, workerLeases, cancellationToken, coordinator, new DefaultInternalOptions([:])),
+            [nodeExecutor],
+            buildOperationExecutor,
+            listenerBuildOperationDecorator,
+            thisBuild,
+            graphListeners,
+            taskExecutionListeners,
+            listenerRegistrationListener,
+            Stub(ServiceRegistry) {
+                get(TaskDependencyFactory) >> TestFiles.taskDependencyFactory()
+            }
+        )
         parentWorkerLease = workerLeases.startWorker()
         _ * executorFactory.create(_) >> Mock(ManagedExecutor)
         _ * nodeExecutor.execute(_ as Node, _ as NodeExecutionContext) >> { Node node, NodeExecutionContext context ->
@@ -125,9 +143,11 @@ class DefaultTaskExecutionGraphSpec extends AbstractExecutionPlanSpec {
     def cleanup() {
         parentWorkerLease.leaseFinish()
         workerLeases.stop()
+        buildOperationExecutor.reset()
     }
 
     def "collects task failures"() {
+        NativeServicesTestFixture.initialize()
         def failure = new RuntimeException()
         def a = brokenTask("a", failure)
 
