@@ -36,7 +36,6 @@ import org.gradle.api.tasks.TaskDestroyables
 import org.gradle.internal.resources.DefaultResourceLockCoordinationService
 import org.gradle.internal.resources.ResourceLock
 import org.gradle.test.fixtures.file.TestNameTestDirectoryProvider
-import org.gradle.testfixtures.internal.NativeServicesTestFixture
 import org.gradle.util.Path
 import org.gradle.util.TestUtil
 import org.junit.Rule
@@ -45,18 +44,18 @@ import spock.lang.Specification
 abstract class AbstractExecutionPlanSpec extends Specification {
     @Rule
     final TestNameTestDirectoryProvider temporaryFolder = TestNameTestDirectoryProvider.newInstance(getClass())
-    private def backing
+    private def backing = TestUtil.createRootProject(temporaryFolder.testDirectory)
     private def locks = new ArrayList<MockLock>()
     private def acquired = new HashSet<MockLock>()
-    def thisBuild
-    def project
+    def thisBuild = backing.gradle
+    def project = project()
     def nodeValidator = Mock(NodeValidator)
     def coordinator = new DefaultResourceLockCoordinationService()
 
-    def setup() {
-        backing = TestUtil.createRootProject(temporaryFolder.testDirectory)
-        thisBuild = backing.gradle
-        project = project()
+    def cleanup() {
+        backing = null
+        thisBuild = null
+        project = null
     }
 
     protected Set<ProjectInternal> getLockedProjects() {
