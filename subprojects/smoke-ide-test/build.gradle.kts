@@ -1,17 +1,14 @@
-import gradlebuild.basics.gradleProperty
-import gradlebuild.integrationtests.tasks.SmokeIdeTest
 import gradlebuild.integrationtests.addDependenciesAndConfigurations
+import gradlebuild.integrationtests.tasks.SmokeIdeTest
 
 plugins {
-    id("gradlebuild.internal.java")
+    id("gradlebuild.internal.kotlin")
 }
 
 description = "Tests are checking Gradle behavior during IDE synchronization process"
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
+kotlin {
+    jvmToolchain(17)
 }
 
 repositories {
@@ -51,12 +48,6 @@ tasks.register<SmokeIdeTest>("smokeIdeTest") {
     javaLauncher = javaToolchains.launcherFor {
         languageVersion = JavaLanguageVersion.of(17)
     }
-    jvmArgumentProviders.add(
-        SmokeIdeTestSystemProperties(
-            gradleProperty("ideaHome"),
-            gradleProperty("studioHome")
-        )
-    )
 }
 
 tasks.withType<GroovyCompile>().configureEach {
@@ -65,35 +56,15 @@ tasks.withType<GroovyCompile>().configureEach {
     targetCompatibility = "17"
 }
 
-class SmokeIdeTestSystemProperties(
-    @get:Internal
-    val ideaHome: Provider<String>,
-
-    @get:Internal
-    val studioHome: Provider<String>
-) : CommandLineArgumentProvider {
-    override fun asArguments(): MutableIterable<String> = buildList {
-        if (ideaHome.isPresent) {
-            add("-DideaHome=${ideaHome.get()}")
-        }
-        if (studioHome.isPresent) {
-            add("-DstudioHome=${studioHome.get()}")
-        }
-    }.toMutableList()
-}
-
 dependencies {
-    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-starter-squashed:233.14808.21") {
-        exclude("io.grpc")
+    val ideStarterVersion = "233.14808.21"
+    implementation("com.jetbrains.intellij.tools:ide-starter-squashed:$ideStarterVersion")
+    implementation("com.jetbrains.intellij.tools:ide-performance-testing-commands:$ideStarterVersion")
+    implementation("org.kodein.di:kodein-di-jvm:7.16.0") {
+        because("Ide-starter uses Kodein API to configure its behavior")
     }
-    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-starter-junit4:233.14808.21") {
-        exclude("io.grpc")
-    }
-    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-performance-testing-commands:233.14808.21") {
-        exclude("io.grpc")
-    }
-    smokeIdeTestImplementation("org.kodein.di:kodein-di-jvm:7.16.0")
-    smokeIdeTestImplementation(libs.gradleProfiler)
+
+    smokeIdeTestImplementation("com.jetbrains.intellij.tools:ide-starter-junit4:$ideStarterVersion")
     smokeIdeTestDistributionRuntimeOnly(project(":distributions-full")) {
         because("Tests starts an IDE with using current Gradle distribution")
     }

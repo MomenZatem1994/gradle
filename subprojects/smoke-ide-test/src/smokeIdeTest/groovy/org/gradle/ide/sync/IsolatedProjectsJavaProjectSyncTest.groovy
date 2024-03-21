@@ -28,17 +28,19 @@ class IsolatedProjectsJavaProjectSyncTest extends AbstractIdeaSyncTest {
         simpleJavaProject()
 
         when:
-        ideaSync("release", "2023.2.3")
+        ideaSync("release", "2023.3.4")
 
         then:
         fixture.assertHtmlReportHasProblems {
-            totalProblemsCount = 74
-            withLocatedProblem(new StringContains("sync.studio.tooling"), "Cannot access project ':app' from project ':'")
-            withLocatedProblem(new StringContains("sync.studio.tooling"), "Cannot access project ':lib' from project ':'")
+            totalProblemsCount = 20
+            withLocatedProblem(new StringContains("ijIdeaPluginConfigurator"), "Cannot access project ':app' from project ':'")
+            withLocatedProblem(new StringContains("ijIdeaPluginConfigurator"), "Cannot access project ':lib' from project ':'")
+            withLocatedProblem(new StringContains("ijIdeaPluginConfigurator"), "Cannot access project ':app' from project ':'. 'Project.evaluationDependsOn' must be used to establish a dependency between project ':app' and project ':' evaluation")
+            withLocatedProblem(new StringContains("ijIdeaPluginConfigurator"), "Cannot access project ':lib' from project ':'. 'Project.evaluationDependsOn' must be used to establish a dependency between project ':lib' and project ':' evaluation")
             withLocatedProblem("Plugin class 'JetGradlePlugin'", "Cannot access project ':app' from project ':'")
             withLocatedProblem("Plugin class 'JetGradlePlugin'", "Cannot access project ':lib' from project ':'")
-            withLocatedProblem("Plugin class 'JetGradlePlugin'", "Cannot access project ':app' from project ':'. 'Project.evaluationDependsOn' must be used to establish a dependency between project ':app' and project ':' evaluation")
-            withLocatedProblem("Plugin class 'JetGradlePlugin'", "Cannot access project ':lib' from project ':'. 'Project.evaluationDependsOn' must be used to establish a dependency between project ':lib' and project ':' evaluation")
+            withLocatedProblem("Plugin class 'JetGradlePlugin'", "Cannot access project ':' from project ':app'")
+            withLocatedProblem("Plugin class 'JetGradlePlugin'", "Cannot access project ':' from project ':lib'")
         }
     }
 

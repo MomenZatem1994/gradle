@@ -16,23 +16,10 @@
 
 package org.gradle.ide.sync
 
-
 import com.intellij.ide.starter.ide.IDETestContext
-import com.intellij.ide.starter.ide.IdeProductProvider
 import com.intellij.ide.starter.junit4.JUnit4StarterRule
 import com.intellij.ide.starter.junit4.JUnit4StarterRuleKt
-import com.intellij.ide.starter.models.IdeInfo
 import com.intellij.ide.starter.models.TestCase
-import com.intellij.ide.starter.models.VMOptions
-import com.intellij.ide.starter.project.LocalProjectInfo
-import com.intellij.ide.starter.runner.IDECommandLine
-import com.intellij.ide.starter.runner.IDERunContext
-import com.intellij.tools.ide.performanceTesting.commands.CommandChain
-import com.intellij.tools.ide.performanceTesting.commands.GeneralCommandChainKt
-import kotlin.Unit
-import kotlin.jvm.functions.Function1
-import kotlin.time.DurationKt
-import kotlin.time.DurationUnit
 import org.gradle.integtests.fixtures.executer.GradleDistribution
 import org.gradle.integtests.fixtures.executer.IntegrationTestBuildContext
 import org.gradle.integtests.fixtures.executer.UnderDevelopmentGradleDistribution
@@ -46,9 +33,14 @@ import spock.lang.Timeout
 
 import java.nio.file.Path
 
-@SuppressWarnings("GroovyAccessibility")
-@CleanupTestDirectory
+
+/**
+ * Tests that runs a project import to IDEA, with an provisioning of the desired version.
+ *
+ * Provisioned IDEs are cached in the {@link #getIdeHome} directory.
+ */
 @Timeout(600)
+@CleanupTestDirectory
 abstract class AbstractIdeaSyncTest extends Specification {
 
     @Rule
@@ -62,14 +54,24 @@ abstract class AbstractIdeaSyncTest extends Specification {
 
     private final GradleDistribution distribution = new UnderDevelopmentGradleDistribution(getBuildContext())
 
-    private IntegrationTestBuildContext getBuildContext() {
+    def setup() {
+        IdeStarterIntegration.INSTANCE.configureIdeHome(
+            getBuildContext().gradleUserHomeDir.file("ide").toPath()
+        )
+    }
+
+    IntegrationTestBuildContext getBuildContext() {
         return IntegrationTestBuildContext.INSTANCE
     }
 
+    /**
+     * Downloads, if it absent in {@link #getIdeHome} dir, Idea Community with a passed build type and version
+     * and runs a project import to it.
+     */
     protected void ideaSync(String buildType, String version) {
         TestCase testCase = new TestCase(
-            getIdeaCommunity(buildType, version),
-            getTestProject(),
+            IdeStarterIntegration.INSTANCE.getIdeaCommunity(buildType, version),
+            IdeStarterIntegration.INSTANCE.getLocalProject(testDirectory.toPath()),
             Collections.EMPTY_LIST,
             false
         )
@@ -80,13 +82,21 @@ abstract class AbstractIdeaSyncTest extends Specification {
 
         useLocalGradleDistributionIn(testContext)
 
-        runSync(testContext)
+        IdeStarterIntegration.INSTANCE.runSync(testContext)
     }
 
     protected TestFile getTestDirectory() {
         temporaryFolder.testDirectory
     }
 
+    protected TestFile file(Object... path) {
+        if (path.length == 1 && path[0] instanceof TestFile) {
+            return path[0] as TestFile
+        }
+        testDirectory.file(path)
+    }
+
+    // This sets current Gradle distribution as a Gradle version to run with to IDEA
     private void useLocalGradleDistributionIn(IDETestContext testContext) {
         testContext.paths.configDir.resolve("options/gradle.default.xml").toFile() << """
             <application>
@@ -98,66 +108,7 @@ abstract class AbstractIdeaSyncTest extends Specification {
         """
     }
 
-    private void runSync(IDETestContext testContext) {
-        testContext.invokeMethod("runIDE-SBKQj6I", [
-            new Function1<IDERunContext, IDECommandLine>() {
-                @Override
-                IDECommandLine invoke(IDERunContext ideRunContext) {
-                    return new IDECommandLine.OpenTestCaseProject(testContext, [])
-                }
-            },
-            GeneralCommandChainKt.exitApp(new CommandChain(), false),
-            null,
-            DurationKt.toDuration(10, DurationUnit.MINUTES),
-            true,
-            "",
-            false,
-            false,
-            new Function1<IDERunContext, Unit>() {
-                @Override
-                Unit invoke(IDERunContext vmOptions) {
-                    return Unit.INSTANCE
-                }
-            }
-        ]
-        )
-    }
-
-    protected TestFile file(Object... path) {
-        if (path.length == 1 && path[0] instanceof TestFile) {
-            return path[0] as TestFile
-        }
-        testDirectory.file(path)
-    }
-
-    private LocalProjectInfo getTestProject() {
-        new LocalProjectInfo(
-            testDirectory.toPath(),
-            false,
-            DurationKt.toDuration(1, DurationUnit.MINUTES),
-            new Function1<IDETestContext, Unit>() {
-                @Override
-                Unit invoke(IDETestContext context) {
-                    return Unit.INSTANCE
-                }
-            },
-            "Project under test"
-        )
-    }
-
-    private static IdeInfo getIdeaCommunity(String buildType, String version) {
-        new IdeInfo(
-            IdeProductProvider.IC.productCode,
-            IdeProductProvider.IC.platformPrefix,
-            IdeProductProvider.IC.executableFileName,
-            buildType,
-            IdeProductProvider.IC.additionalModules,
-            IdeProductProvider.IC.buildNumber,
-            version,
-            IdeProductProvider.IC.tag,
-            IdeProductProvider.IC.downloadURI,
-            IdeProductProvider.IC.fullName,
-            IdeProductProvider.IC.getInstaller
-        )
+    private Path getIdeHome() {
+        return getBuildContext().gradleUserHomeDir.file("ide").toPath()
     }
 }
