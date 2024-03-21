@@ -50,7 +50,7 @@ public class DefaultTypeValidationContext extends ProblemRecordingTypeValidation
         this.reportCacheabilityProblems = reportCacheabilityProblems;
     }
 
-    public static final ProblemId MISSING_NORMALIZATION_ID = new DefaultProblemId("missing-normalization-annotation", "Missing normalization", GradleCoreProblemGroup.validation().property());
+    public static final ProblemId MISSING_NORMALIZATION_ID = new DefaultProblemId("missing-normalization-annotation", "TODO (donat) Missing normalization", GradleCoreProblemGroup.validation().property());
 
     public static boolean onlyAffectsCacheableWork(ProblemId id) {
         return MISSING_NORMALIZATION_ID.equals(id);

@@ -159,8 +159,8 @@ public enum ValidationActions implements ValidationAction {
             String lowerKind = kind.toLowerCase();
             problem
                 .forProperty(propertyName)
-                .id(TextUtil.screamingSnakeToKebabCase(UNEXPECTED_INPUT_FILE_TYPE), "input not allowed for property", GradleCoreProblemGroup.validation().property())
-                .contextualLabel("specifies " + lowerKind + " '" + input + "' which doesn't exist")
+                .id(TextUtil.screamingSnakeToKebabCase(UNEXPECTED_INPUT_FILE_TYPE), "TODO (donat) input not allowed for property", GradleCoreProblemGroup.validation().property())
+                .contextualLabel("TODO (donat) context specifies " + lowerKind + " '" + input + "' which doesn't exist")
                 .documentedAt(userManual("validation_problems", INPUT_FILE_DOES_NOT_EXIST.toLowerCase()))
                 .severity(Severity.ERROR)
                 .details("An input file was expected to be present but it doesn't exist")
@@ -176,8 +176,8 @@ public enum ValidationActions implements ValidationAction {
             String lowerKind = kind.toLowerCase();
             problem
                 .forProperty(propertyName)
-                .id(TextUtil.screamingSnakeToKebabCase(UNEXPECTED_INPUT_FILE_TYPE), "input not allowed for property", GradleCoreProblemGroup.validation().property())
-                .contextualLabel(lowerKind + " '" + input + "' is not a " + lowerKind)
+                .id(TextUtil.screamingSnakeToKebabCase(UNEXPECTED_INPUT_FILE_TYPE), "TODO (donat) input not allowed for property", GradleCoreProblemGroup.validation().property())
+                .contextualLabel("TODO (donat) context " + lowerKind + " '" + input + "' is not a " + lowerKind)
                 .documentedAt(userManual("validation_problems", "unexpected_input_file_type"))
                 .severity(Severity.ERROR)
                 .details("Expected an input to be a " + lowerKind + " but it was a " + actualKindOf(input))
@@ -192,8 +192,8 @@ public enum ValidationActions implements ValidationAction {
         context.visitPropertyProblem(problem ->
             problem
                 .forProperty(propertyName)
-                .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_OUTPUT), "property not writeable", GradleCoreProblemGroup.validation().property())
-                .contextualLabel("is not writable because " + cause)
+                .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_OUTPUT), "TODO (donat) property not writeable", GradleCoreProblemGroup.validation().property())
+                .contextualLabel("TODO (donat) context " + "is not writable because " + cause)
                 .documentedAt(userManual("validation_problems", CANNOT_WRITE_OUTPUT.toLowerCase()))
                 .severity(Severity.ERROR)
                 .details("Expected '" + directory + "' to be a directory but it's a " + actualKindOf(directory))
@@ -205,8 +205,8 @@ public enum ValidationActions implements ValidationAction {
         context.visitPropertyProblem(problem ->
             problem
                 .forProperty(propertyName)
-                .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_OUTPUT), "property is not writable", GradleCoreProblemGroup.validation().property())
-                .contextualLabel("is not writable because '" + directory + "' is not a directory")
+                .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_OUTPUT), "TODO (donat) property is not writable", GradleCoreProblemGroup.validation().property())
+                .contextualLabel("TODO (donat) context " + "is not writable because '" + directory + "' is not a directory")
                 .documentedAt(userManual("validation_problems", CANNOT_WRITE_OUTPUT.toLowerCase()))
                 .severity(Severity.ERROR)
                 .details("Expected the root of the file tree '" + directory + "' to be a directory but it's a " + actualKindOf(directory))
@@ -218,8 +218,8 @@ public enum ValidationActions implements ValidationAction {
         context.visitPropertyProblem(problem ->
             problem
                 .forProperty(propertyName)
-                .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_OUTPUT), "property is not writable", GradleCoreProblemGroup.validation().property())
-                .contextualLabel("is not writable because '" + file + "' is not a file")
+                .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_OUTPUT), "TODO (donat) property is not writable", GradleCoreProblemGroup.validation().property())
+                .contextualLabel("TODO (donat) context " + "is not writable because '" + file + "' is not a file")
                 .documentedAt(userManual("validation_problems", CANNOT_WRITE_OUTPUT.toLowerCase()))
                 .details("Cannot write a file to a location pointing at a directory")
                 .severity(Severity.ERROR)
@@ -232,8 +232,8 @@ public enum ValidationActions implements ValidationAction {
         context.visitPropertyProblem(problem ->
             problem
                 .forProperty(propertyName)
-                .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_OUTPUT), "property is not writable", GradleCoreProblemGroup.validation().property())
-                .contextualLabel("is not writable because '" + file + "' ancestor '" + ancestor + "' is not a directory")
+                .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_OUTPUT), "TODO (donat) property is not writable", GradleCoreProblemGroup.validation().property())
+                .contextualLabel("TODO (donat) context " + "is not writable because '" + file + "' ancestor '" + ancestor + "' is not a directory")
                 .documentedAt(userManual("validation_problems", CANNOT_WRITE_OUTPUT.toLowerCase()))
                 .severity(Severity.ERROR)
                 .details("Cannot create parent directories that are existing as file")
@@ -258,8 +258,8 @@ public enum ValidationActions implements ValidationAction {
             context.visitPropertyProblem(problem ->
                 problem
                     .forProperty(propertyName)
-                    .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_TO_RESERVED_LOCATION), "points to a location which is managed by Gradle", GradleCoreProblemGroup.validation().property())
-                    .contextualLabel("points to '" + location + "' which is managed by Gradle")
+                    .id(TextUtil.screamingSnakeToKebabCase(CANNOT_WRITE_TO_RESERVED_LOCATION), "TODO (donat) points to a location which is managed by Gradle", GradleCoreProblemGroup.validation().property())
+                    .contextualLabel("TODO (donat) context " + "points to '" + location + "' which is managed by Gradle")
                     .documentedAt(userManual("validation_problems", CANNOT_WRITE_TO_RESERVED_LOCATION.toLowerCase()))
                     .severity(Severity.ERROR)
                     .details("Trying to write an output to a read-only location which is for Gradle internal use only")
@@ -291,8 +291,8 @@ public enum ValidationActions implements ValidationAction {
         context.visitPropertyProblem(problem -> {
                 ProblemSpec describedProblem = problem
                     .forProperty(propertyName)
-                    .id(TextUtil.screamingSnakeToKebabCase(UNSUPPORTED_NOTATION), "property has unsupported value", GradleCoreProblemGroup.validation().property())
-                    .contextualLabel("has unsupported value '" + value + "'")
+                    .id(TextUtil.screamingSnakeToKebabCase(UNSUPPORTED_NOTATION), "TODO (donat) property has unsupported value", GradleCoreProblemGroup.validation().property())
+                    .contextualLabel("TODO (donat) context " + "has unsupported value '" + value + "'")
                     .documentedAt(userManual("validation_problems", UNSUPPORTED_NOTATION.toLowerCase()))
                     .severity(Severity.ERROR)
                     .details("Type '" + typeOf(value) + "' cannot be converted to a " + targetType);

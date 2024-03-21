@@ -204,7 +204,7 @@ public class DefaultTransform implements Transform {
                 validationContext.visitPropertyProblem(problem ->
                     problem
                         .forProperty(propertyName)
-                        .id(TextUtil.screamingSnakeToKebabCase(CACHEABLE_TRANSFORM_CANT_USE_ABSOLUTE_SENSITIVITY), "is declared to be sensitive to absolute paths", GradleCoreProblemGroup.validation().property())
+                        .id(TextUtil.screamingSnakeToKebabCase(CACHEABLE_TRANSFORM_CANT_USE_ABSOLUTE_SENSITIVITY), "TODO (donat)  is declared to be sensitive to absolute paths", GradleCoreProblemGroup.validation().property())
                         .documentedAt(userManual("validation_problems", "cacheable_transform_cant_use_absolute_sensitivity"))
                         .severity(ERROR)
                         .details("This is not allowed for cacheable transforms")
@@ -362,7 +362,7 @@ public class DefaultTransform implements Transform {
                     validationContext.visitPropertyProblem(problem ->
                         problem
                             .forProperty(propertyName)
-                            .id(TextUtil.screamingSnakeToKebabCase(ARTIFACT_TRANSFORM_SHOULD_NOT_DECLARE_OUTPUT), "declares an output", GradleCoreProblemGroup.validation().property())
+                            .id(TextUtil.screamingSnakeToKebabCase(ARTIFACT_TRANSFORM_SHOULD_NOT_DECLARE_OUTPUT), "TODO (donat) declares an output", GradleCoreProblemGroup.validation().property())
                             .documentedAt(userManual("validation_problems", ARTIFACT_TRANSFORM_SHOULD_NOT_DECLARE_OUTPUT.toLowerCase()))
                             .severity(ERROR)
                             .details("is annotated with an output annotation")

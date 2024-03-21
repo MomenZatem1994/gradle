@@ -140,8 +140,8 @@ public class ValidateStep<C extends BeforeExecutionContext, R extends Result> im
             workValidationContext.visitPropertyProblem(problem -> problem
                 .forProperty(propertyName)
                 .typeIsIrrelevantInErrorMessage()
-                .id(TextUtil.screamingSnakeToKebabCase(UNKNOWN_IMPLEMENTATION), "Nested input problem for property", GradleCoreProblemGroup.validation().property())
-                .contextualLabel(unknownImplSnapshot.getProblemDescription())
+                .id(TextUtil.screamingSnakeToKebabCase(UNKNOWN_IMPLEMENTATION), "TODO (donat) " + "Nested input problem for property", GradleCoreProblemGroup.validation().property())
+                .contextualLabel("TODO (donat) context " + unknownImplSnapshot.getProblemDescription())
                 .documentedAt(userManual("validation_problems", "implementation_unknown"))
                 .details(unknownImplSnapshot.getReasonDescription())
                 .solution(unknownImplSnapshot.getSolutionDescription())
@@ -155,8 +155,8 @@ public class ValidateStep<C extends BeforeExecutionContext, R extends Result> im
             UnknownImplementationSnapshot unknownImplSnapshot = (UnknownImplementationSnapshot) implementation;
             workValidationContext.visitPropertyProblem(problem -> problem
                 .typeIsIrrelevantInErrorMessage()
-                .id(TextUtil.screamingSnakeToKebabCase(UNKNOWN_IMPLEMENTATION), "Problem with property", GradleCoreProblemGroup.validation().property())
-                .contextualLabel(descriptionPrefix + work + " " + unknownImplSnapshot.getProblemDescription())
+                .id(TextUtil.screamingSnakeToKebabCase(UNKNOWN_IMPLEMENTATION), "TODO (donat) " + "Problem with property", GradleCoreProblemGroup.validation().property())
+                .contextualLabel("TODO (donat) context " + descriptionPrefix + work + " " + unknownImplSnapshot.getProblemDescription())
                 .documentedAt(userManual("validation_problems", "implementation_unknown"))
                 .details(unknownImplSnapshot.getReasonDescription())
                 .solution(unknownImplSnapshot.getSolutionDescription())

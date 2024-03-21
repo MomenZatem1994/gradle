@@ -172,8 +172,8 @@ public class MissingTaskDependencyDetector {
     private void collectValidationProblem(Node producer, Node consumer, TypeValidationContext validationContext, String consumerProducerPath) {
         validationContext.visitPropertyProblem(problem ->
             problem.typeIsIrrelevantInErrorMessage()
-                .id(TextUtil.screamingSnakeToKebabCase(IMPLICIT_DEPENDENCY), "Property has implicit dependency ", GradleCoreProblemGroup.validation().property())
-                .contextualLabel("Gradle detected a problem with the following location: '" + consumerProducerPath + "'")
+                .id(TextUtil.screamingSnakeToKebabCase(IMPLICIT_DEPENDENCY), "TODO (donat) Property has implicit dependency ", GradleCoreProblemGroup.validation().property())
+                .contextualLabel("TODO (donat) context " + "Gradle detected a problem with the following location: '" + consumerProducerPath + "'")
                 .documentedAt(userManual("validation_problems", IMPLICIT_DEPENDENCY.toLowerCase()))
                 .severity(Severity.ERROR)
                 .details(String.format("Task '%s' uses this output of task '%s' without declaring an explicit or implicit dependency. "

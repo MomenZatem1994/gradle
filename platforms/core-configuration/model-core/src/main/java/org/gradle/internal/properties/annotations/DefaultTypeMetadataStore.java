@@ -110,8 +110,8 @@ public class DefaultTypeMetadataStore implements TypeMetadataStore {
                 validationContext.visitPropertyProblem(problem ->
                     problem
                         .forProperty(propertyAnnotationMetadata.getPropertyName())
-                        .id(TextUtil.screamingSnakeToKebabCase(MISSING_ANNOTATION), "property missing", GradleCoreProblemGroup.validation().property())
-                        .contextualLabel("is missing " + displayName)
+                        .id(TextUtil.screamingSnakeToKebabCase(MISSING_ANNOTATION), "TODO (donat) property missing", GradleCoreProblemGroup.validation().property())
+                        .contextualLabel("TODO (donat) context " + "is missing " + displayName)
                         .documentedAt(userManual("validation_problems", MISSING_ANNOTATION.toLowerCase()))
                         .severity(ERROR)
                         .details("A property without annotation isn't considered during up-to-date checking")
@@ -126,8 +126,8 @@ public class DefaultTypeMetadataStore implements TypeMetadataStore {
                 validationContext.visitPropertyProblem(problem ->
                     problem
                         .forProperty(propertyAnnotationMetadata.getPropertyName())
-                        .id(TextUtil.screamingSnakeToKebabCase(ANNOTATION_INVALID_IN_CONTEXT), "is annotated with invalid property type", GradleCoreProblemGroup.validation().property())
-                        .contextualLabel(String.format("is annotated with invalid property type @%s", propertyType.getSimpleName()))
+                        .id(TextUtil.screamingSnakeToKebabCase(ANNOTATION_INVALID_IN_CONTEXT), "TODO (donat) is annotated with invalid property type", GradleCoreProblemGroup.validation().property())
+                        .contextualLabel("TODO (donat) context " + String.format("is annotated with invalid property type @%s", propertyType.getSimpleName()))
                         .documentedAt(userManual("validation_problems", ANNOTATION_INVALID_IN_CONTEXT.toLowerCase()))
                         .severity(ERROR)
                         .details("The '@" + propertyType.getSimpleName() + "' annotation cannot be used in this context")
@@ -148,8 +148,8 @@ public class DefaultTypeMetadataStore implements TypeMetadataStore {
                     validationContext.visitPropertyProblem(problem ->
                         problem
                             .forProperty(propertyAnnotationMetadata.getPropertyName())
-                            .id(TextUtil.screamingSnakeToKebabCase(INCOMPATIBLE_ANNOTATIONS), "Wrong property annotation", GradleCoreProblemGroup.validation().property())
-                            .contextualLabel("is annotated with @" + annotationType.getSimpleName() + " but that is not allowed for '" + propertyType.getSimpleName() + "' properties")
+                            .id(TextUtil.screamingSnakeToKebabCase(INCOMPATIBLE_ANNOTATIONS), "TODO (donat) Wrong property annotation", GradleCoreProblemGroup.validation().property())
+                            .contextualLabel("TODO (donat) context " + "is annotated with @" + annotationType.getSimpleName() + " but that is not allowed for '" + propertyType.getSimpleName() + "' properties")
                             .documentedAt(userManual("validation_problems", INCOMPATIBLE_ANNOTATIONS.toLowerCase()))
                             .severity(ERROR)
                             .details("This modifier is used in conjunction with a property of type '" + propertyType.getSimpleName() + "' but this doesn't have semantics")
@@ -158,8 +158,8 @@ public class DefaultTypeMetadataStore implements TypeMetadataStore {
                     validationContext.visitPropertyProblem(problem ->
                         problem
                             .forProperty(propertyAnnotationMetadata.getPropertyName())
-                            .id(TextUtil.screamingSnakeToKebabCase(ANNOTATION_INVALID_IN_CONTEXT), "is annotated with invalid modifier", GradleCoreProblemGroup.validation().property())
-                            .contextualLabel(String.format("is annotated with invalid modifier @%s", annotationType.getSimpleName()))
+                            .id(TextUtil.screamingSnakeToKebabCase(ANNOTATION_INVALID_IN_CONTEXT), "TODO (donat) is annotated with invalid modifier", GradleCoreProblemGroup.validation().property())
+                            .contextualLabel("TODO (donat) context " + String.format("is annotated with invalid modifier @%s", annotationType.getSimpleName()))
                             .documentedAt(userManual("validation_problems", ANNOTATION_INVALID_IN_CONTEXT.toLowerCase()))
                             .severity(ERROR)
                             .details("The '@" + annotationType.getSimpleName() + "' annotation cannot be used in this context")

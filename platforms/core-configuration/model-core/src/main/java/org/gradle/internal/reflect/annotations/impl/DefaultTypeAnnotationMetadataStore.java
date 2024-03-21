@@ -280,9 +280,9 @@ public class DefaultTypeAnnotationMetadataStore implements TypeAnnotationMetadat
                 previouslySeenBuilder.visitPropertyProblem(problem ->
                     problem
                         .forProperty(propertyName)
-                        .id(TextUtil.screamingSnakeToKebabCase(REDUNDANT_GETTERS), "has redundant getters", GradleCoreProblemGroup.validation().property())
+                        .id(TextUtil.screamingSnakeToKebabCase(REDUNDANT_GETTERS), "TODO (donat) has redundant getters", GradleCoreProblemGroup.validation().property())
                         .contextualLabel(
-                            String.format(
+                            "TODO (donat) context " + String.format(
                                 "has redundant getters: '%s()' and '%s()'",
                                 previouslySeenBuilder.getter.getName(),
                                 metadataBuilder.getter.getName()
@@ -346,9 +346,9 @@ public class DefaultTypeAnnotationMetadataStore implements TypeAnnotationMetadat
                     validationContext.visitTypeProblem(problem ->
                         problem
                             .withAnnotationType(type)
-                            .id(TextUtil.screamingSnakeToKebabCase(IGNORED_ANNOTATIONS_ON_FIELD), "field without corresponding getter has been annotated with a wrong annotation", GradleCoreProblemGroup.validation().property())
+                            .id(TextUtil.screamingSnakeToKebabCase(IGNORED_ANNOTATIONS_ON_FIELD), "TODO (donat) field without corresponding getter has been annotated with a wrong annotation", GradleCoreProblemGroup.validation().property())
                             .contextualLabel(
-                                String.format(
+                                "TODO (donat) context " + String.format(
                                     "field '%s' without corresponding getter has been annotated with %s",
                                     fieldName,
                                     simpleAnnotationNames(fieldAnnotations.keySet().stream())
@@ -439,8 +439,8 @@ public class DefaultTypeAnnotationMetadataStore implements TypeAnnotationMetadat
             metadataBuilder.visitPropertyProblem(problem ->
                 problem
                     .forProperty(propertyName)
-                    .id(TextUtil.screamingSnakeToKebabCase(PRIVATE_GETTER_MUST_NOT_BE_ANNOTATED), "is private and with wrong annotation", GradleCoreProblemGroup.validation().property())
-                    .contextualLabel(String.format("is private and annotated with %s", simpleAnnotationNames(annotations.keySet().stream())))
+                    .id(TextUtil.screamingSnakeToKebabCase(PRIVATE_GETTER_MUST_NOT_BE_ANNOTATED), "TODO (donat) is private and with wrong annotation", GradleCoreProblemGroup.validation().property())
+                    .contextualLabel("TODO (donat) context " + String.format("is private and annotated with %s", simpleAnnotationNames(annotations.keySet().stream())))
                     .documentedAt(userManual("validation_problems", PRIVATE_GETTER_MUST_NOT_BE_ANNOTATED.toLowerCase()))
                     .severity(ERROR)
                     .details("Annotations on private getters are ignored")
@@ -462,8 +462,8 @@ public class DefaultTypeAnnotationMetadataStore implements TypeAnnotationMetadat
             validationContext.visitPropertyProblem(problem ->
                 problem
                     .forProperty(propertyName)
-                    .id(TextUtil.screamingSnakeToKebabCase(MUTABLE_TYPE_WITH_SETTER), "mutable type is writeable", GradleCoreProblemGroup.validation().property())
-                    .contextualLabel(String.format("of mutable type '%s' is writable", setterType.getName()))
+                    .id(TextUtil.screamingSnakeToKebabCase(MUTABLE_TYPE_WITH_SETTER), "TODO (donat) mutable type is writeable", GradleCoreProblemGroup.validation().property())
+                    .contextualLabel("TODO (donat) context " + String.format("of mutable type '%s' is writable", setterType.getName()))
                     .documentedAt(userManual("validation_problems", MUTABLE_TYPE_WITH_SETTER.toLowerCase()))
                     .severity(ERROR)
                     .details("Properties of type '" + setterType.getName() + "' are already mutable")
@@ -497,9 +497,9 @@ public class DefaultTypeAnnotationMetadataStore implements TypeAnnotationMetadat
         if (!annotationTypes.isEmpty()) {
             validationContext.visitTypeProblem(problem ->
                 problem.withAnnotationType(method.getDeclaringClass())
-                    .id(TextUtil.screamingSnakeToKebabCase(IGNORED_ANNOTATIONS_ON_METHOD), methodKind.getDisplayName()  + " has wrong annotation", GradleCoreProblemGroup.validation().type())
+                    .id(TextUtil.screamingSnakeToKebabCase(IGNORED_ANNOTATIONS_ON_METHOD), methodKind.getDisplayName()  + "TODO (donat)  has wrong annotation", GradleCoreProblemGroup.validation().type())
                     .contextualLabel(
-                        String.format(
+                        "TODO (donat) context " + String.format(
                             "%s '%s()' should not be annotated with: %s",
                             methodKind.getDisplayName(), method.getName(),
                             simpleAnnotationNames(annotationTypes.stream())
@@ -602,9 +602,9 @@ public class DefaultTypeAnnotationMetadataStore implements TypeAnnotationMetadat
                         visitPropertyProblem(problem ->
                             problem
                                 .forProperty(propertyName)
-                                .id(TextUtil.screamingSnakeToKebabCase(IGNORED_PROPERTY_MUST_NOT_BE_ANNOTATED), "has wrong combination of annotations", GradleCoreProblemGroup.validation().property())
+                                .id(TextUtil.screamingSnakeToKebabCase(IGNORED_PROPERTY_MUST_NOT_BE_ANNOTATED), "TODO (donat) has wrong combination of annotations", GradleCoreProblemGroup.validation().property())
                                 .contextualLabel(
-                                    String.format(
+                                    "TODO (donat) context " + String.format(
                                         "annotated with @%s should not be also annotated with %s",
                                         ignoredMethodAnnotation.getSimpleName(),
                                         simpleAnnotationNames(declaredAnnotations.values().stream()
@@ -661,9 +661,9 @@ public class DefaultTypeAnnotationMetadataStore implements TypeAnnotationMetadat
                 visitPropertyProblem(problem ->
                     problem
                         .forProperty(propertyName)
-                        .id(TextUtil.screamingSnakeToKebabCase(CONFLICTING_ANNOTATIONS), category.getDisplayName() + " has conflicting annotation", GradleCoreProblemGroup.validation().property())
+                        .id(TextUtil.screamingSnakeToKebabCase(CONFLICTING_ANNOTATIONS), category.getDisplayName() + "TODO (donat)  has conflicting annotation", GradleCoreProblemGroup.validation().property())
                         .contextualLabel(
-                            String.format(
+                            "TODO (donat) context " + String.format(
                                 "has conflicting %s annotations %s: %s",
                                 category.getDisplayName(),
                                 source,

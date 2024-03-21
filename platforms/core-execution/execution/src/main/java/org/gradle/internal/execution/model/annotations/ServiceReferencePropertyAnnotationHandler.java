@@ -66,8 +66,8 @@ public class ServiceReferencePropertyAnnotationHandler extends AbstractPropertyA
             validationContext.visitPropertyProblem(problem ->
                 problem
                     .forProperty(propertyMetadata.getPropertyName())
-                    .id(TextUtil.screamingSnakeToKebabCase(SERVICE_REFERENCE_MUST_BE_A_BUILD_SERVICE), "has @ServiceReference annotation used on property", GradleCoreProblemGroup.validation().property())
-                    .contextualLabel(String.format("has @ServiceReference annotation used on property of type '%s' which is not a build service implementation", typeVariables.get(0).getName()))
+                    .id(TextUtil.screamingSnakeToKebabCase(SERVICE_REFERENCE_MUST_BE_A_BUILD_SERVICE), "TODO (donat) has @ServiceReference annotation used on property", GradleCoreProblemGroup.validation().property())
+                    .contextualLabel("TODO (donat) context " + String.format("has @ServiceReference annotation used on property of type '%s' which is not a build service implementation", typeVariables.get(0).getName()))
                     .documentedAt(userManual("validation_problems", SERVICE_REFERENCE_MUST_BE_A_BUILD_SERVICE.toLowerCase()))
                     .severity(Severity.ERROR)
                     .details(String.format("A property annotated with @ServiceReference must be of a type that implements '%s'", BuildService.class.getName()))

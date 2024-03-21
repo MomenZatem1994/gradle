@@ -47,8 +47,8 @@ public abstract class AbstractTypeAnnotationHandler implements TypeAnnotationHan
     ) {
         visitor.visitTypeProblem(problem ->
             problem.withAnnotationType(classWithAnnotationAttached)
-                .id("invalid-use-of-type-annotation", "is incorrectly annotated", GradleCoreProblemGroup.validation().type())
-                .contextualLabel("is incorrectly annotated with @" + annotationType.getSimpleName())
+                .id("invalid-use-of-type-annotation", "TODO (donat) is incorrectly annotated", GradleCoreProblemGroup.validation().type())
+                .contextualLabel("TODO (donat) context " + "is incorrectly annotated with @" + annotationType.getSimpleName())
                 .documentedAt(Documentation.userManual("validation_problems", "invalid_use_of_cacheable_annotation"))
                 .severity(Severity.ERROR)
                 .details(String.format("This annotation only makes sense on %s types", Arrays.stream(appliesOnlyTo)

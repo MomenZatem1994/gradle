@@ -67,9 +67,9 @@ abstract class AbstractInputPropertyAnnotationHandler extends AbstractPropertyAn
             validationContext.visitPropertyProblem(problem -> {
                     ProblemSpec describedProblem = problem
                         .forProperty(propertyMetadata.getPropertyName())
-                        .id(TextUtil.screamingSnakeToKebabCase(UNSUPPORTED_VALUE_TYPE), "property with unsupported annotation", GradleCoreProblemGroup.validation().property())
+                        .id(TextUtil.screamingSnakeToKebabCase(UNSUPPORTED_VALUE_TYPE), "TODO (donat) property with unsupported annotation", GradleCoreProblemGroup.validation().property())
                         .contextualLabel(
-                            String.format(
+                            "TODO (donat) context " + String.format(
                                 "has @%s annotation used on property of type '%s'",
                                 annotationType.getSimpleName(),
                                 TypeOf.typeOf(propertyMetadata.getDeclaredType().getType()).getSimpleName()
