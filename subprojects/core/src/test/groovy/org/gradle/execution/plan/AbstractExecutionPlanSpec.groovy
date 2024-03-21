@@ -54,7 +54,6 @@ abstract class AbstractExecutionPlanSpec extends Specification {
     def coordinator = new DefaultResourceLockCoordinationService()
 
     def setup() {
-        NativeServicesTestFixture.initialize()
         backing = TestUtil.createRootProject(temporaryFolder.testDirectory)
         thisBuild = backing.gradle
         project = project()
