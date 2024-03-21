@@ -52,12 +52,6 @@ abstract class AbstractExecutionPlanSpec extends Specification {
     def nodeValidator = Mock(NodeValidator)
     def coordinator = new DefaultResourceLockCoordinationService()
 
-    def cleanup() {
-        backing = null
-        thisBuild = null
-        project = null
-    }
-
     protected Set<ProjectInternal> getLockedProjects() {
         return locks.findAll { it.locked }.collect { it.project } as Set
     }

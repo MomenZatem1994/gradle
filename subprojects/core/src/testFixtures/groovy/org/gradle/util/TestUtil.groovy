@@ -247,6 +247,9 @@ class TestUtil {
     }
 
     static ProjectInternal createRootProject(File rootDir) {
+        // Initialize native services via a test fixture, so that they are located in the separate folder
+        // from the project being tested. With that we avoid test folder file-locking issues on cleanup on Windows.
+        NativeServicesTestFixture.initialize()
         return ProjectBuilder
             .builder()
             .withProjectDir(rootDir)
@@ -255,6 +258,9 @@ class TestUtil {
     }
 
     static ProjectInternal createChildProject(ProjectInternal parent, String name, File projectDir = null) {
+        // Initialize native services via a test fixture, so that they are located in the separate folder
+        // from the project being tested. With that we avoid test folder file-locking issues on cleanup on Windows.
+        NativeServicesTestFixture.initialize()
         return ProjectBuilder
             .builder()
             .withName(name)
